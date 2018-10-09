@@ -1,0 +1,42 @@
+<h1>Listing events</h1>
+
+<%= link_to 'Add Event', new_event_path %><br /><br /><br />
+<%# debugger %>
+<%= form_tag "", method: :get do %>
+  <%= select_tag "user", options_for_select(@users.map {|user| [user.name, user.id, { 'data-url' => events_path(user: user.id) }] }, selected: params[:user]), include_blank: "All Users" %>
+  <%= submit_tag "go", name: nil, class: 'btn' %>
+<% end %>
+
+<% if @events.present? %>
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Start At</th>
+    <th>Ends At</th>
+    <th>Users</th>
+  </tr>
+
+<% @events.each do |event| %>
+  <tr>
+    <td><%= event.title %></td>
+    <td><%= event.description %></td>
+    <td><%= event.starts_at %></td>
+    <td><%= event.ends_at %></td>
+    <td><%= event.users.collect(&:name).join(", ") %></td>
+    <td><%= link_to 'Edit', edit_event_path(event) %></td>
+  </tr>
+<% end %>
+</table>
+<% else %>
+	No events found
+<% end %>
+
+<br />
+
+<script type="text/javascript">
+	$("#event").change(function() {
+  	var form_url = $(this).find(':selected').data('url');
+   $('#event-form').prop('action', form_url);
+});
+</script>
